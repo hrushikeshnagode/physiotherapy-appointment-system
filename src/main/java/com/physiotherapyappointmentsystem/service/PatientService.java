@@ -110,16 +110,7 @@ public class PatientService {
 
         appointmentRepository.save(appointment);
 
-        return AppointmentDTO.builder()
-                .id(appointment.getId())
-                .patientName(patient.getName())
-                .physiotherapistName(physio.getName())
-                .appointmentDate(slot.getDate())
-                .startTime(slot.getStartTime())
-                .endTime(slot.getEndTime())
-                .status(appointment.getStatus().name())
-                .paymentStatus(appointment.getPaymentStatus().name())
-                .build();
+        return mapToAppointmentDTO(appointment);
     }
 
     public List<AppointmentDTO> getPatientAppointments(String patientEmail) {
@@ -127,16 +118,27 @@ public class PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
 
         return appointmentRepository.findByPatientIdOrderByAppointmentDateDesc(patient.getId())
-                .stream().map(a -> AppointmentDTO.builder()
-                        .id(a.getId())
-                        .patientName(a.getPatient().getName())
-                        .physiotherapistName(a.getPhysiotherapist().getName())
-                        .appointmentDate(a.getAppointmentDate())
-                        .startTime(a.getSlot().getStartTime())
-                        .endTime(a.getSlot().getEndTime())
-                        .status(a.getStatus().name())
-                        .paymentStatus(a.getPaymentStatus().name())
-                        .build()
-                ).collect(Collectors.toList());
+                .stream().map(this::mapToAppointmentDTO).collect(Collectors.toList());
+    }
+
+    private AppointmentDTO mapToAppointmentDTO(Appointment a) {
+        PhysiotherapistProfile profile = physioProfileRepository.findByUserId(a.getPhysiotherapist().getId())
+                .orElse(new PhysiotherapistProfile());
+
+        return AppointmentDTO.builder()
+                .id(a.getId())
+                .patientName(a.getPatient().getName())
+                .physiotherapistName(a.getPhysiotherapist().getName())
+                .appointmentDate(a.getAppointmentDate())
+                .startTime(a.getSlot().getStartTime())
+                .endTime(a.getSlot().getEndTime())
+                .status(a.getStatus().name())
+                .paymentStatus(a.getPaymentStatus().name())
+                .qualification(profile.getQualification())
+                .specialization(profile.getSpecialization())
+                .clinicAddress(profile.getClinicAddress())
+                .contactNumber(profile.getContactNumber())
+                .fees(profile.getFees())
+                .build();
     }
 }

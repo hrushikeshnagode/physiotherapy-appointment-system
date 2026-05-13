@@ -1,60 +1,76 @@
 import { useNavigate } from 'react-router-dom';
 
-function PhysioCard({ physio }) {
+function PhysioCard({ physio, index }) {
   const navigate = useNavigate();
+  const staggerClass = `stagger-${(index % 3) + 1}`;
 
   return (
-    <div className="col-lg-4 col-md-6 mb-4 animate-fade-in">
-      <div className="glass-card h-100 overflow-hidden d-flex flex-column">
-        {/* Top Accent Strip */}
-        <div className="bg-primary" style={{ height: '4px', opacity: 0.8 }}></div>
+    <div className={`col-lg-4 col-md-6 mb-4 animate-reveal ${staggerClass}`}>
+      <div className="glass-card h-100 d-flex flex-column border-0 shadow-lg" 
+           style={{ borderRadius: '28px' }}>
         
-        <div className="card-body p-4 d-flex flex-column">
-          <div className="d-flex align-items-start mb-4">
-            <div className="bg-primary bg-opacity-10 text-primary rounded-4 d-flex align-items-center justify-content-center fw-bold fs-4 shadow-sm"
-                 style={{ width: '64px', height: '64px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+        {/* Visual Accent */}
+        <div className="position-absolute top-0 end-0 p-4 opacity-10" style={{ fontSize: '4rem', zIndex: 0 }}>
+          🩺
+        </div>
+
+        <div className="card-body p-4 d-flex flex-column position-relative" style={{ zIndex: 1 }}>
+          <div className="d-flex align-items-center mb-4">
+            <div className="bg-primary text-white rounded-4 d-flex align-items-center justify-content-center fw-bold fs-4 shadow-xl"
+                 style={{ width: '64px', height: '64px', background: 'linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%)' }}>
               {physio.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
             </div>
-            <div className="ms-3 pt-1">
-              <h5 className="fw-bold mb-1 tracking-tight text-main">{physio.name}</h5>
-              <div className="d-flex flex-wrap gap-2">
-                <span className="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10 px-2 py-1 rounded-3 small">
+            <div className="ms-3">
+              <h5 className="fw-bold mb-1 tracking-tight text-slate-900">{physio.name}</h5>
+              <div className="d-flex align-items-center gap-2">
+                <span className="badge bg-white text-primary border border-primary border-opacity-20 px-2 py-1 rounded-pill small fw-bold">
                   {physio.specialization}
                 </span>
-                {physio.availableToday && (
-                  <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10 px-2 py-1 rounded-3 small animate-pulse">
-                    ⚡ Available Today
-                  </span>
-                )}
               </div>
             </div>
           </div>
 
-          <div className="mb-4">
-            <div className="d-flex align-items-center mb-2">
-              <span className="me-2">🎓</span>
-              <span className="text-muted small fw-medium">{physio.qualification}</span>
+          <div className="space-y-3 mb-4 flex-grow-1">
+            <div className="d-flex align-items-center p-2 rounded-3 hover-bg-light transition-smooth">
+              <span className="me-3 fs-5">🎓</span>
+              <div>
+                <small className="text-muted d-block lh-1">Qualification</small>
+                <span className="fw-semibold small">{physio.qualification}</span>
+              </div>
             </div>
-            <div className="d-flex align-items-center mb-2">
-              <span className="me-2">📍</span>
-              <span className="text-muted small text-truncate fw-medium">{physio.clinicAddress}</span>
+            <div className="d-flex align-items-center p-2 rounded-3 hover-bg-light transition-smooth">
+              <span className="me-3 fs-5">📍</span>
+              <div className="text-truncate">
+                <small className="text-muted d-block lh-1">Location</small>
+                <span className="fw-semibold small text-truncate d-block">{physio.clinicAddress}</span>
+              </div>
             </div>
-            <div className="d-flex align-items-center">
-              <span className="me-2">📞</span>
-              <span className="text-muted small fw-medium">{physio.contactNumber}</span>
+            <div className="d-flex align-items-center p-2 rounded-3 hover-bg-light transition-smooth">
+              <span className="me-3 fs-5">💬</span>
+              <div>
+                <small className="text-muted d-block lh-1">Support</small>
+                <span className="fw-semibold small">Available for Chat</span>
+              </div>
             </div>
           </div>
 
-          <div className="mt-auto pt-4 border-top border-light d-flex justify-content-between align-items-center">
+          {physio.availableToday && (
+            <div className="mb-4 p-2 bg-success bg-opacity-10 rounded-4 border border-success border-opacity-20 d-flex align-items-center justify-content-center gap-2 animate-pulse">
+              <span className="d-block bg-success rounded-circle" style={{ width: '8px', height: '8px', boxShadow: '0 0 10px #10b981' }}></span>
+              <span className="text-success small fw-bold uppercase tracking-wider" style={{ fontSize: '0.7rem' }}>Elite Availability Today</span>
+            </div>
+          )}
+
+          <div className="mt-auto pt-4 border-top border-slate-100 d-flex justify-content-between align-items-center">
             <div>
-              <small className="text-muted d-block" style={{ fontSize: '0.75rem' }}>CONSULTATION FEE</small>
-              <span className="fw-bold text-primary fs-5">₹{physio.fees}</span>
+              <small className="text-muted d-block fw-bold tracking-widest" style={{ fontSize: '0.65rem' }}>FEE</small>
+              <span className="fw-extrabold text-slate-900 fs-4">₹{physio.fees}</span>
             </div>
             <button
-              className="btn btn-premium btn-sm px-4 py-2"
+              className="btn btn-premium px-4 py-2 shadow-lg"
               onClick={() => navigate(`/patient/book/${physio.userId}`)}
             >
-              View Slots →
+              Book Now <span className="ms-1">→</span>
             </button>
           </div>
         </div>

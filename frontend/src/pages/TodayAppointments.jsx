@@ -22,78 +22,83 @@ function TodayAppointments() {
 
   if (loading) return (
     <div className="container py-5 text-center">
-      <div className="spinner-border text-primary"></div>
-      <p className="mt-3 text-muted">Fetching your schedule...</p>
+      <div className="spinner-border text-primary" style={{ width: '3rem', height: '3rem' }}></div>
+      <p className="mt-4 text-muted fw-bold animate-pulse">Synchronizing your daily schedule...</p>
     </div>
   );
 
   return (
-    <div className="container py-5 animate-fade-in">
+    <div className="container py-5">
       <div className="row justify-content-center">
-        <div className="col-lg-10">
+        <div className="col-lg-11 animate-reveal">
           <div className="d-flex justify-content-between align-items-center mb-5">
             <div className="d-flex align-items-center">
-              <Link to="/physio/dashboard" className="btn btn-light rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
+              <Link to="/physio/dashboard" className="btn btn-premium-outline rounded-circle me-4 d-flex align-items-center justify-content-center p-0 shadow-sm" style={{ width: '48px', height: '48px' }}>
                 ←
               </Link>
               <div>
-                <h2 className="fw-bold tracking-tight mb-1">Today's Schedule</h2>
-                <p className="text-muted mb-0">Overview of your booked sessions for {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                <h1 className="fw-extrabold tracking-tight mb-1">Today's <span className="heading-gradient">Schedule</span></h1>
+                <p className="text-muted mb-0 fw-medium">Managing sessions for {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
               </div>
             </div>
-            <div className="bg-white p-2 rounded-4 shadow-sm border small px-3">
-              <span className="text-primary fw-bold">{appointments.length}</span> Sessions Booked
+            <div className="bg-white p-3 rounded-4 shadow-sm border small px-4">
+              <span className="text-primary fw-extrabold fs-5">{appointments.length}</span> <span className="text-muted fw-bold text-uppercase tracking-widest ms-1" style={{ fontSize: '0.7rem' }}>Sessions Booked</span>
             </div>
           </div>
 
           {appointments.length === 0 ? (
-            <div className="glass-card p-5 text-center bg-white bg-opacity-50">
+            <div className="glass-card p-5 text-center border-0 shadow-lg">
               <div className="fs-1 mb-3">☕</div>
-              <h5 className="fw-bold">No appointments yet</h5>
-              <p className="text-muted mb-0">Your schedule is currently clear for today. New bookings will appear here.</p>
+              <h4 className="fw-bold">Peaceful Day Ahead</h4>
+              <p className="text-muted mb-0">No sessions booked yet. Enjoy your clear schedule!</p>
             </div>
           ) : (
-            <div className="glass-card overflow-hidden shadow-lg border-0 animate-fade-in">
+            <div className="glass-card overflow-hidden border-0 shadow-2xl">
               <div className="table-responsive">
                 <table className="table table-hover mb-0 align-middle">
-                  <thead className="bg-light">
+                  <thead className="bg-slate-900 text-white border-0">
                     <tr>
-                      <th className="px-4 py-3 text-muted fw-bold small text-uppercase">Time Slot</th>
-                      <th className="py-3 text-muted fw-bold small text-uppercase">Patient Name</th>
-                      <th className="py-3 text-muted fw-bold small text-uppercase text-center">Status</th>
-                      <th className="py-3 text-muted fw-bold small text-uppercase text-center">Payment Status</th>
-                      <th className="px-4 py-3 text-muted fw-bold small text-uppercase text-end">Action</th>
+                      <th className="px-4 py-4 text-uppercase tracking-widest small fw-bold">Time Slot</th>
+                      <th className="py-4 text-uppercase tracking-widest small fw-bold">Patient Details</th>
+                      <th className="py-4 text-center text-uppercase tracking-widest small fw-bold">Status</th>
+                      <th className="py-4 text-center text-uppercase tracking-widest small fw-bold">Payment</th>
+                      <th className="px-4 py-4 text-end text-uppercase tracking-widest small fw-bold">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {appointments.map((a) => (
-                      <tr key={a.id} className="border-bottom border-light">
+                    {appointments.map((a, index) => (
+                      <tr key={a.id} className="border-bottom border-slate-100">
                         <td className="px-4 py-4">
-                          <div className="fw-bold text-primary" style={{ fontSize: '1.1rem' }}>
+                          <div className="fw-extrabold text-slate-900 fs-5 mb-0">
                             {fmt(a.startTime)}
                           </div>
-                          <div className="text-muted small">to {fmt(a.endTime)}</div>
+                          <div className="text-muted small fw-bold opacity-75">to {fmt(a.endTime)}</div>
                         </td>
                         <td className="py-4">
                           <div className="d-flex align-items-center">
-                            <div className="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center me-3 fw-bold" style={{ width: '36px', height: '36px', fontSize: '0.9rem' }}>
+                            <div className="bg-primary text-white rounded-4 d-flex align-items-center justify-content-center me-3 fw-extrabold shadow-sm" style={{ width: '42px', height: '42px', fontSize: '1.1rem' }}>
                               {a.patientName[0]}
                             </div>
-                            <div className="fw-semibold text-main">{a.patientName}</div>
+                            <div>
+                              <div className="fw-bold text-slate-900">{a.patientName}</div>
+                              <div className="text-muted small fw-medium">Scheduled Patient</div>
+                            </div>
                           </div>
                         </td>
                         <td className="py-4 text-center">
-                          <span className="badge rounded-pill px-3 py-2 fw-medium bg-success bg-opacity-10 text-success">
+                          <span className="badge rounded-pill px-3 py-2 fw-bold bg-success bg-opacity-10 text-success border border-success border-opacity-20">
                             {a.status}
                           </span>
                         </td>
                         <td className="py-4 text-center">
-                          <span className="badge rounded-pill px-3 py-2 fw-medium bg-indigo bg-opacity-10 text-primary" style={{ color: '#6366f1' }}>
+                          <span className="badge rounded-pill px-3 py-2 fw-bold bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20">
                             {a.paymentStatus}
                           </span>
                         </td>
                         <td className="px-4 py-4 text-end">
-                          <button className="btn btn-premium-outline btn-sm px-4">Start Session</button>
+                          <button className="btn btn-premium btn-sm px-4 shadow-md">
+                            Start <span className="d-none d-md-inline">Session</span>
+                          </button>
                         </td>
                       </tr>
                     ))}

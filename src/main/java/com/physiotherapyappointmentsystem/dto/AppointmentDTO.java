@@ -18,4 +18,11 @@ public class AppointmentDTO {
     private LocalTime endTime;
     private String status;
     private String paymentStatus;
+
+    // Extra details for 'Details' view
+    private String qualification;
+    private String specialization;
+    private String clinicAddress;
+    private String contactNumber;
+    private Double fees;
 }

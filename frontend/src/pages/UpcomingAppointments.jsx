@@ -4,6 +4,7 @@ import API from '../api/axiosConfig';
 function UpcomingAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedApp, setSelectedApp] = useState(null);
 
   useEffect(() => {
     API.get('/patient/appointments').then(res => {
@@ -86,7 +87,12 @@ function UpcomingAppointments() {
                           </span>
                         </td>
                         <td className="px-4 py-4 text-end">
-                          <button className="btn btn-light btn-sm rounded-3 px-3 fw-semibold border shadow-sm">Details</button>
+                          <button 
+                            className="btn btn-light btn-sm rounded-3 px-3 fw-semibold border shadow-sm"
+                            onClick={() => setSelectedApp(a)}
+                          >
+                            Details
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -97,6 +103,75 @@ function UpcomingAppointments() {
           )}
         </div>
       </div>
+
+      {/* Details Modal */}
+      {selectedApp && (
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content glass-card border-0 shadow-2xl animate-fade-in-up">
+              <div className="modal-header border-0 pb-0">
+                <h5 className="modal-title fw-bold tracking-tight">Appointment Details</h5>
+                <button type="button" className="btn-close" onClick={() => setSelectedApp(null)}></button>
+              </div>
+              <div className="modal-body py-4">
+                <div className="d-flex align-items-center mb-4">
+                  <div className="bg-primary bg-opacity-10 text-primary rounded-4 d-flex align-items-center justify-content-center me-3" style={{ width: '60px', height: '60px', fontSize: '1.5rem', fontWeight: '800' }}>
+                    {selectedApp.physiotherapistName[0]}
+                  </div>
+                  <div>
+                    <h5 className="fw-bold mb-1">{selectedApp.physiotherapistName}</h5>
+                    <p className="text-muted small mb-0">{selectedApp.specialization || 'Physiotherapist'} • {selectedApp.qualification || 'BPT'}</p>
+                  </div>
+                </div>
+
+                <div className="row g-3">
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-4 border border-white">
+                      <small className="text-muted d-block mb-1">Date</small>
+                      <span className="fw-bold small">{selectedApp.appointmentDate}</span>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-4 border border-white">
+                      <small className="text-muted d-block mb-1">Time Slot</small>
+                      <span className="fw-bold small">{fmt(selectedApp.startTime)} - {fmt(selectedApp.endTime)}</span>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-4 border border-white">
+                      <small className="text-muted d-block mb-1">Status</small>
+                      <span className={`badge rounded-pill px-2 py-1 small ${selectedApp.status === 'CONFIRMED' ? 'bg-success text-white' : 'bg-danger text-white'}`}>
+                        {selectedApp.status}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="p-3 bg-light rounded-4 border border-white">
+                      <small className="text-muted d-block mb-1">Consultation Fee</small>
+                      <span className="fw-bold small">₹{selectedApp.fees || '500'}</span>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="p-3 bg-light rounded-4 border border-white">
+                      <small className="text-muted d-block mb-1">Clinic Address</small>
+                      <p className="small mb-0 fw-medium">{selectedApp.clinicAddress || 'Address not available'}</p>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="p-3 bg-light rounded-4 border border-white">
+                      <small className="text-muted d-block mb-1">Contact Details</small>
+                      <p className="small mb-0 fw-medium">📞 {selectedApp.contactNumber || 'Contact not provided'}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer border-0 pt-0">
+                <button type="button" className="btn btn-premium w-100 py-3 rounded-4" onClick={() => setSelectedApp(null)}>Close Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
